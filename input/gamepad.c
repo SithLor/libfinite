@@ -153,6 +153,14 @@ static void *finite_draw_controller_popup(void *data) {
         FiniteColorGroup bar_btn_inactive = {0.349,0.349,0.349, 1};
         FiniteColorGroup finite_gris0 = {0.317,0.317,0.317,1.0};// #515151
 
+        //precalculate some values to avoid doing it every frame in the loop
+        double _height = (double)height;
+        double _iw = (double)iw;
+        double _ih = (double)ih;
+        double _width = (double)width;
+        double _w = (double)w;
+        double _h = (double)h;
+
         finite_draw_rounded_rect(popupShell, 0, 0, w, h, (height * 0.02), &bg, NULL, false);    
         
         int size = (height * 0.033);
@@ -167,12 +175,22 @@ static void *finite_draw_controller_popup(void *data) {
 
         FINITE_LOG("Width: %f (%d)", w, width);
         cairo_surface_destroy(image);
-        finite_draw_png(popupShell, "/console/icons/controllerv2.png", ((w / 2) - ((double) iw / 2)), ((h / 2) - (double)ih / 2), ( (double)width * 0.2119), ((double)height * 0.265), NULL, &white);
+
+        finite_draw_png(popupShell, "/console/icons/controllerv2.png", 
+            ((w / 2) - (_iw / 2)), 
+            ((h / 2) - _ih / 2),
+            (_width * 0.2119), 
+            (_height * 0.265), 
+            NULL, 
+            &white
+        );
 
         // draw status bar
         int devs = popupShell->_gamepads;
-        double bw = ((double)width * 0.109), bh = (height * 0.023);
-        double bx = ((w / 2) - (bw / 2)), by = (h * 0.85);
+        double bw = (_width * 0.109);
+        double bh = (height * 0.023);
+        double bx = ((w / 2) - (bw / 2));
+        double by = (h * 0.85);
         finite_draw_rounded_rect(popupShell, bx, by, bw, bh, (height * 0.009), &bar_bg, NULL, false);
 
         for (int i = 0; i < 4; i++) {
@@ -189,9 +207,11 @@ static void *finite_draw_controller_popup(void *data) {
         if (devs > 0 ) {
             size = (height * 0.024); // ~26 on 1080p
             finite_draw_set_font(popupShell, "Kumbh Sans", false, true, size);
-            double xW = (width * 0.176), yH = (height * 0.0629); // ~338x68
-            double nW = ((double)w - (xW * 1.15)), nY = ((double)h - (yH * 1.5));
-            double nRad = ((double)height * 0.03);
+            double xW = (width * 0.176);
+            double yH = (height * 0.0629); // ~338x68
+            double nW = (_w - (xW * 1.15));
+            double nY = (_h - (yH * 1.5));
+            double nRad = (_height * 0.03);
 
             finite_draw_rounded_rect(popupShell, (nW), nY, xW, yH, nRad, &finite_gris0, NULL, true);
 
@@ -228,8 +248,9 @@ static void *finite_draw_controller_popup(void *data) {
                 finite_draw_rounded_rect(popupShell, bx, by, bw, bh, (height * 0.009), &bar_bg, NULL, false);
 
                 for (int i = 0; i < 4; i++) {
-                    double mbw = ((double) width * 0.024), mbh = ((double) height *0.013);
-                    double mbx = (bx + (mbw * i) + ((width * 0.0022) * (i + 1))), mby = (by + ((bh / 2) - (mbh / 2 )));
+                    double mbw = (_width * 0.024), mbh = (_height *0.013);
+                    double mbx = (bx + (mbw * i) + ((width * 0.0022) * (i + 1)));
+                    double mby = (by + ((bh / 2) - (mbh / 2 )));
                     if (i < devs) {
                         finite_draw_rounded_rect(popupShell, mbx, mby, mbw, mbh, (height * 0.005), &bar_btn_active, NULL, false);
                     } else {
@@ -266,8 +287,9 @@ static void *finite_draw_controller_popup(void *data) {
                     size = (height * 0.024); // ~26 on 1080p
                     finite_draw_set_font(popupShell, "Kumbh Sans", false, true, size);
                     double xW = (width * 0.176), yH = (height * 0.0629); // ~338x68
-                    double nW = ((double)w - (xW * 1.15)), nY = ((double)h - (yH * 1.5));
-                    double nRad = ((double)height * 0.03);
+                    double nW = (_w - (xW * 1.15));
+                    double nY = (_h - (yH * 1.5));
+                    double nRad = (_height * 0.03);
 
                     finite_draw_rounded_rect(popupShell, (nW), nY, xW, yH, nRad, &finite_gris0, NULL, true);
                     finite_draw_stroke(popupShell, &bar_btn_inactive, NULL, 7);
